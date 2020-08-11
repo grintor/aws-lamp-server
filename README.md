@@ -244,7 +244,33 @@ here is a redirect index.html that can be used for the default docroot:
 
 other packages that most webservers should have may be good to install now.
 ```console
-administrator@localhost:~$ sudo apt-get install unzip zip php-gd php-imap php-xml php-mbstring php-intl php-memcached php-apcu memcached
+administrator@localhost:~$ sudo apt-get install unzip zip php-gd php-imap php-xml php-mbstring php-intl php-curl php-memcached php-apcu memcached
 administrator@localhost:~$ sudo service apache2 restart
+```
+
+At some point you will need to connect to mysql. To set a root password do:
+```console
+administrator@localhost:~$ sudo mysql -u root
+
+mysql> drop user 'root'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create user 'root'@'%' identified by 'new_password';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> grant all privileges on *.* to 'root'@'%' with grant option;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> exit
+Bye
+
+```
+
+adminter can be downloaded to manage mysql via gui:
+```console
+administrator@localhost:~$ wget https://github.com/vrana/adminer/releases/download/v4.7.7/adminer-4.7.7.php
 ```
 
