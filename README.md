@@ -155,6 +155,11 @@ administrator@localhost:~$ echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.con
 administrator@localhost:~$ echo 'vm.vfs_cache_pressure=50' | sudo tee -a /etc/sysctl.conf
 ```
 
+we can check that the swap (and memory compression) is working with:
+```console
+administrator@localhost:~$ swapon -s
+```
+
 Since this is a VM, there is a risk of the enprophy pool drying up, which can cause webpages not to load if this is a webserver which needs to generate keys for example. So to prevent that, we need to install haveged
 
 ```console
@@ -177,6 +182,7 @@ administrator@localhost:~$ sudo usermod -a -G www-data www-data # add to www-dat
 administrator@localhost:~$ sudo find . -type d -exec chmod 2775 {} \;  # Change directory permissions rwxr-xr-x
 administrator@localhost:~$ sudo find . -type f -exec chmod 664 {} \;  # Change file permissions rw-r--r--
 ```
+NOTE: these group changes will not take effect until you log out and back in, so maybe do that now.
 Note that you can run these commands again anytime you have website permission issues to reset everything to sane defaults
 
 if we want just just use cloudflare to manage our ssl, and we are not worried about the MITM attack between AWS and cloudflare, then we can disable ssl in apache with:
@@ -234,5 +240,11 @@ administrator@localhost:~$ sudo systemctl reload apache2
 here is a redirect index.html that can be used for the default docroot:
 ```html
 <!DOCTYPE html><html lang='en'><title>redirect</title><script>window.location.replace("https://www.example.com");</script>redirecting to <a href='https://www.example.com'>example.com</a>
+```
+
+other packages that most webservers should have may be good to install now.
+```console
+administrator@localhost:~$ sudo apt-get install unzip zip php-gd php-imap php-xml php-mbstring php-intl php-memcached php-apcu memcached
+administrator@localhost:~$ sudo service apache2 restart
 ```
 
