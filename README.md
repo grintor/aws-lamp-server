@@ -255,7 +255,7 @@ administrator@localhost:~$ sudo mysql -u root
 mysql> drop user 'root'@'localhost';
 Query OK, 0 rows affected (0.00 sec)
 
-mysql> create user 'root'@'%' identified IDENTIFIED WITH mysql_native_password BY 'new_password';
+mysql> create user 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'new_password';
 Query OK, 0 rows affected (0.01 sec)
 
 mysql> grant all privileges on *.* to 'root'@'%' with grant option;
