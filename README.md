@@ -129,5 +129,110 @@ administrator@localhost:~$ sudo apt-get install zram-config linux-image-extra-vi
 administrator@localhost:~$ sudo apt-get install linux-virtual
 administrator@localhost:~$ sudo apt-get purge linux-*aws 
 ```
-Running that last command will throw a warning that you are uninstalling the kernel that you are using and ask to abort. Do not abort, 
+Running that last command will throw a warning that you are uninstalling the kernel that you are using and ask to abort. Do not abort, the default kernel on aws cannot support memory compression, and we just installed a kernel that can.
+
+now we need to reboot so the new kernel will be used
+```console
+administrator@localhost:~$ sudo reboot
+```
+
+Next we should make a swap file. 
+
+```console
+administrator@localhost:~$ sudo fallocate -l 2G /swapfile
+administrator@localhost:~$ sudo chmod 600 /swapfile
+administrator@localhost:~$ sudo mkswap /swapfile
+administrator@localhost:~$ sudo swapon /swapfile
+administrator@localhost:~$ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+digitalocean reccommends that we should tweak the swap for better performance like so:
+
+```console
+administrator@localhost:~$ sudo sysctl vm.swappiness=10
+administrator@localhost:~$ sudo sysctl vm.vfs_cache_pressure=50
+administrator@localhost:~$ echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+administrator@localhost:~$ echo 'vm.vfs_cache_pressure=50' | sudo tee -a /etc/sysctl.conf
+```
+
+Since this is a VM, there is a risk of the enprophy pool drying up, which can cause webpages not to load if this is a webserver which needs to generate keys for example. So to prevent that, we need to install haveged
+
+```console
+administrator@localhost:~$ sudo apt-get install haveged
+```
+
+Now we can install the lamp stack
+
+```console
+administrator@localhost:~$ sudo apt-get install lamp-server^
+```
+
+The first thing you should do is configure the permissions on the webroot directory so that this administrator user can manipulate webpage files yet the permission are still secure.
+
+```console
+administrator@localhost:~$ cd /var/www
+administrator@localhost:~$ sudo chown www-data:www-data -R * # Let Apache be owner
+administrator@localhost:~$ sudo usermod -a -G www-data administrator # add administrator to www-data group
+administrator@localhost:~$ sudo usermod -a -G www-data www-data # add to www-data to www-data group
+administrator@localhost:~$ sudo find . -type d -exec chmod 2775 {} \;  # Change directory permissions rwxr-xr-x
+administrator@localhost:~$ sudo find . -type f -exec chmod 664 {} \;  # Change file permissions rw-r--r--
+```
+Note that you can run these commands again anytime you have website permission issues to reset everything to sane defaults
+
+if we want just just use cloudflare to manage our ssl, and we are not worried about the MITM attack between AWS and cloudflare, then we can disable ssl in apache with:
+```console
+administrator@localhost:~$ sudo a2dismod ssl
+administrator@localhost:~$ sudo service apache2 restart
+```
+
+We can now edit the default apache config:
+```console
+administrator@localhost:~$ sudo nano /etc/apache2/sites-available/000-default.conf
+```
+
+which should at least involve setting the serveradmin email but may also involve moving the documentRoot
+
+We can enable the use of `.htaccess` files by editing:
+```console
+administrator@localhost:~$ sudo nano /etc/apache2/apache2.conf
+```
+and setting AllowOverride All in /var/www:
+```
+<Directory /var/www/>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+</Directory>
+```
+
+and the restarting apache
+
+```console
+administrator@localhost:~$ sudo service apache2 restart
+```
+
+now we can set up a virualhost like this 
+```console
+administrator@localhost:~$ cd /etc/apache2/sites-available/
+administrator@localhost:~$ sudo cp 000-default.conf example.com.conf
+administrator@localhost:~$ sudo nano example.com.conf
+administrator@localhost:~$ change the `DocumentRoot` path and add:
+```
+
+```
+ServerName example.com
+ServerAlias www.example.com
+```
+
+then enable and activate the site with:
+
+```console
+administrator@localhost:~$ sudo a2ensite example.com
+administrator@localhost:~$ sudo systemctl reload apache2
+```
+
+here is a redirect index.html that can be used for the default docroot:
+```html
+<!DOCTYPE html><html lang='en'><title>redirect</title><script>window.location.replace("https://www.example.com");</script>redirecting to <a href='https://www.example.com'>example.com</a>
+```
 
