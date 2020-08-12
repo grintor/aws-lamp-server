@@ -169,7 +169,7 @@ administrator@localhost:~$ sudo apt-get install haveged
 Now we can install/configure the lamp stack
 
 ```console
-administrator@localhost:~$ sudo apt-get install apache2 mariadb-server php php-gd php-imap php-xml php-mbstring php-intl php-curl php-memcached php-apcu php-mysqli memcached zip
+administrator@localhost:~$ sudo apt-get install apache2 mariadb-server php php-gd php-imap php-xml php-mbstring php-intl php-curl php-memcached php-apcu php-mysqli memcached zip sendmail
 administrator@localhost:~$ mysql_secure_installation
 ```
 
