@@ -91,21 +91,21 @@ Configuration file `/path/to/something.conf'
       Z     : start a shell to examine the situation
 ```
 
-And if you want to answer "Y" then this is the conf you want:
-```
-# keep old configs on upgrade, move new versions to <file>.dpkg-old
-Dpkg::Options {
-   "--force-confdef";
-   "--force-confnew";
-}
-```
-
-But if you would answer "N" then this is the conf you want (This is the setting I usually go with):
+if you would answer "N" then this is the conf you want (This is the setting I usually go with):
 ```
 # keep old configs on upgrade, move new versions to <file>.dpkg-dist
 Dpkg::Options {
    "--force-confdef";
    "--force-confold";
+}
+```
+
+but if you want to answer "Y" then this is the conf you want:
+```
+# keep old configs on upgrade, move new versions to <file>.dpkg-old
+Dpkg::Options {
+   "--force-confdef";
+   "--force-confnew";
 }
 ```
 
