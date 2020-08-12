@@ -269,6 +269,16 @@ Bye
 
 ```
 
+php may not be able to connect to mysql unless you edit the conf file:
+```console
+administrator@localhost:~$ nano /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+
+and add the following option under `[mysqld]`
+```
+default_authentication_plugin= mysql_native_password
+```
+
 adminter can be downloaded to manage mysql via gui:
 ```console
 administrator@localhost:~$ wget https://github.com/vrana/adminer/releases/download/v4.7.7/adminer-4.7.7.php
