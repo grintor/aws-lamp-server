@@ -271,7 +271,7 @@ Bye
 
 php may not be able to connect to mysql unless you edit the conf file:
 ```console
-administrator@localhost:~$ nano /etc/mysql/mysql.conf.d/mysqld.cnf
+administrator@localhost:~$ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
 
 and add the following option under `[mysqld]`
