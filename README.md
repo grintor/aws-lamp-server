@@ -277,6 +277,7 @@ administrator@localhost:~$ nano /etc/mysql/mysql.conf.d/mysqld.cnf
 and add the following option under `[mysqld]`
 ```
 default_authentication_plugin= mysql_native_password
+character-set-server= utf8
 ```
 
 and then restart the service with 
