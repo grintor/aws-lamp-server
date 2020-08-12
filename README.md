@@ -169,7 +169,7 @@ administrator@localhost:~$ sudo apt-get install haveged
 Now we can install/configure the lamp stack
 
 ```console
-administrator@localhost:~$ sudo apt-get install apache2 mariadb-server php php-gd php-imap php-xml php-mbstring php-intl php-curl php-memcached php-apcu php-mysqli memcached zip sendmail
+administrator@localhost:~$ sudo apt-get install apache2 mariadb-server php php-gd php-imap php-xml php-mbstring php-intl php-curl php-memcached php-apcu php-mysqli memcached brotli zip sendmail
 administrator@localhost:~$ mysql_secure_installation
 ```
 
@@ -241,6 +241,13 @@ administrator@localhost:~$ sudo systemctl reload apache2
 here is a redirect index.html that can be used for the default docroot:
 ```html
 <!DOCTYPE html><html lang='en'><title>redirect</title><script>window.location.replace("https://www.example.com");</script>redirecting to <a href='https://www.example.com'>example.com</a>
+```
+
+likely want to have the mod_rewrite and brotli modules up and running
+```console
+administrator@localhost:~$ sudo a2enmod brotli
+administrator@localhost:~$ sudo a2enmod rewrite
+administrator@localhost:~$ sudo systemctl restart apache2
 ```
 
 At some point you will need to connect to mysql as root. To enable that do:
