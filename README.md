@@ -279,6 +279,11 @@ and add the following option under `[mysqld]`
 default_authentication_plugin= mysql_native_password
 ```
 
+and then restart the service with 
+```console
+administrator@localhost:~$ sudo service mysql restart 
+```
+
 adminter can be downloaded to manage mysql via gui:
 ```console
 administrator@localhost:~$ wget https://github.com/vrana/adminer/releases/download/v4.7.7/adminer-4.7.7.php
