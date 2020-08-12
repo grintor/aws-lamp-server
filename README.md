@@ -290,18 +290,18 @@ adminter can be downloaded to manage mysql via gui:
 administrator@localhost:~$ wget https://github.com/vrana/adminer/releases/download/v4.7.7/adminer-4.7.7.php
 ```
 
-the only php version avalible with the latest ubuntu as of the time of writing is 7.4. to install and switch to 7.3:
+the only php version avalible with the latest ubuntu as of the time of writing is 7.4. to install and switch to 5.6:
 ```console
 administrator@localhost:~$ sudo add-apt-repository ppa:ondrej/php
-administrator@localhost:~$ sudo apt install php7.2
+administrator@localhost:~$ sudo apt install php5.6
 administrator@localhost:~$ sudo a2dismod php7.4
-administrator@localhost:~$ sudo a2enmod php7.3
+administrator@localhost:~$ sudo a2enmod php5.6
 administrator@localhost:~$ sudo service apache2 restart
-administrator@localhost:~$ sudo update-alternatives --set php /usr/bin/php7.3
+administrator@localhost:~$ sudo update-alternatives --set php /usr/bin/php5.6
 ```
 
 but then all the php plugins will have to be installed manaully for that version:
 ```console
-administrator@localhost:~$ sudo apt-get install php7.3-gd php7.3-imap php7.3-xml php7.3-mbstring php7.3-intl php7.3-curl php7.3-memcached php7.3-apcu php7.3-mysqli
+administrator@localhost:~$ sudo apt-get install php5.6-gd php5.6-imap php5.6-xml php5.6-mbstring php5.6-intl php5.6-curl php5.6-memcached php5.6-apcu php5.6-mysqli
 administrator@localhost:~$ sudo service apache2 restart
 ```
