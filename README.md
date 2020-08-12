@@ -290,6 +290,8 @@ adminter can be downloaded to manage mysql via gui:
 administrator@localhost:~$ wget https://github.com/vrana/adminer/releases/download/v4.7.7/adminer-4.7.7.php
 ```
 
+for security sake, you should never use PHP 5.6. That said, sometimes you need to use php 5.6, so here it is
+
 the only php version avalible with the latest ubuntu as of the time of writing is 7.4. to install and switch to 5.6:
 ```console
 administrator@localhost:~$ sudo add-apt-repository ppa:ondrej/php
