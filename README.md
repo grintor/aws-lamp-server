@@ -243,25 +243,13 @@ here is a redirect index.html that can be used for the default docroot:
 <!DOCTYPE html><html lang='en'><title>redirect</title><script>window.location.replace("https://www.example.com");</script>redirecting to <a href='https://www.example.com'>example.com</a>
 ```
 
-At some point you will need to connect to mysql. To set a root password do:
-```console
-administrator@localhost:~$ sudo mysql -u root
-
-mysql> drop user 'root'@'localhost';
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> create user 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'new_password';
-Query OK, 0 rows affected (0.01 sec)
-
-mysql> grant all privileges on *.* to 'root'@'%' with grant option;
-Query OK, 0 rows affected (0.01 sec)
-
-mysql> flush privileges;
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> exit
-Bye
-
+At some point you will need to connect to mysql as root. To enable that do:
+```
+sudo mysql -u root
+use mysql;
+update user set plugin='' where User='root';
+flush privileges;
+exit;
 ```
 
 php may not be able to connect to mysql unless you edit the conf file:
