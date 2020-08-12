@@ -166,10 +166,11 @@ Since this is a VM, there is a risk of the enprophy pool drying up, which can ca
 administrator@localhost:~$ sudo apt-get install haveged
 ```
 
-Now we can install the lamp stack
+Now we can install/configure the lamp stack
 
 ```console
-administrator@localhost:~$ sudo apt-get install lamp-server^
+administrator@localhost:~$ sudo apt-get install apache2 mariadb-server php php-gd php-imap php-xml php-mbstring php-intl php-curl php-memcached php-apcu memcached zip
+administrator@localhost:~$ mysql_secure_installation
 ```
 
 The first thing you should do is configure the permissions on the webroot directory so that this administrator user can manipulate webpage files yet the permission are still secure.
@@ -242,12 +243,6 @@ here is a redirect index.html that can be used for the default docroot:
 <!DOCTYPE html><html lang='en'><title>redirect</title><script>window.location.replace("https://www.example.com");</script>redirecting to <a href='https://www.example.com'>example.com</a>
 ```
 
-other packages that most webservers should have may be good to install now.
-```console
-administrator@localhost:~$ sudo apt-get install unzip zip php-gd php-imap php-xml php-mbstring php-intl php-curl php-memcached php-apcu memcached
-administrator@localhost:~$ sudo service apache2 restart
-```
-
 At some point you will need to connect to mysql. To set a root password do:
 ```console
 administrator@localhost:~$ sudo mysql -u root
@@ -295,15 +290,10 @@ for security sake, you should never use PHP 5.6. That said, sometimes you need t
 the only php version avalible with the latest ubuntu as of the time of writing is 7.4. to install and switch to 5.6:
 ```console
 administrator@localhost:~$ sudo add-apt-repository ppa:ondrej/php
-administrator@localhost:~$ sudo apt install php5.6
+administrator@localhost:~$ sudo apt install php5.6 php5.6-gd php5.6-imap php5.6-xml php5.6-mbstring php5.6-intl php5.6-curl php5.6-memcached php5.6-apcu php5.6-mysqli
 administrator@localhost:~$ sudo a2dismod php7.4
 administrator@localhost:~$ sudo a2enmod php5.6
 administrator@localhost:~$ sudo service apache2 restart
 administrator@localhost:~$ sudo update-alternatives --set php /usr/bin/php5.6
 ```
 
-but then all the php plugins will have to be installed manaully for that version:
-```console
-administrator@localhost:~$ sudo apt-get install php5.6-gd php5.6-imap php5.6-xml php5.6-mbstring php5.6-intl php5.6-curl php5.6-memcached php5.6-apcu php5.6-mysqli
-administrator@localhost:~$ sudo service apache2 restart
-```
