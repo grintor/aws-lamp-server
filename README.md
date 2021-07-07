@@ -177,7 +177,8 @@ The first thing you should do is configure the permissions on the webroot direct
 
 ```console
 administrator@localhost:~$ cd /var/www
-administrator@localhost:~$ sudo chown www-data:www-data -R * # Let Apache be owner
+administrator@localhost:~$ sudo chown www-data:www-data -R * # Let Apache be owner of subdirs
+administrator@localhost:~$ sudo chown www-data:www-data -R . # Let Apache be owner of this dir
 administrator@localhost:~$ sudo usermod -a -G www-data administrator # add administrator to www-data group
 administrator@localhost:~$ sudo usermod -a -G www-data www-data # add to www-data to www-data group
 administrator@localhost:~$ sudo find . -type d -exec chmod 2775 {} \;  # Change directory permissions rwxr-xr-x
