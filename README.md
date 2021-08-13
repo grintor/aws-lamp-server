@@ -102,7 +102,7 @@ Dpkg::Options {
 
 but if you want to answer "Y" then this is the conf you want:
 ```
-# keep old configs on upgrade, move new versions to <file>.dpkg-old
+# keep new configs on upgrade, move old versions to <file>.dpkg-old
 Dpkg::Options {
    "--force-confdef";
    "--force-confnew";
@@ -213,6 +213,15 @@ and setting AllowOverride All in /var/www:
 </Directory>
 ```
 
+don't let apache guess it's name:
+```console
+administrator@localhost:~$ sudo nano /etc/apache2/apache2.conf
+```
+
+```
+ServerName 127.0.0.1
+```
+
 and the restarting apache
 
 ```console
@@ -224,8 +233,9 @@ now we can set up a virualhost like this
 administrator@localhost:~$ cd /etc/apache2/sites-available/
 administrator@localhost:~$ sudo cp 000-default.conf example.com.conf
 administrator@localhost:~$ sudo nano example.com.conf
-administrator@localhost:~$ change the `DocumentRoot` path and add:
 ```
+
+change the `DocumentRoot` path and add:
 
 ```
 ServerName example.com
