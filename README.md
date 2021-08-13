@@ -212,13 +212,7 @@ and setting AllowOverride All in /var/www:
         Require all granted
 </Directory>
 ```
-
-don't let apache guess it's name:
-```console
-administrator@localhost:~$ sudo nano /etc/apache2/apache2.conf
-```
-
-append to the bottom:
+and append to the bottom of `apache2.conf`:
 
 ```
 ServerName 127.0.0.1
