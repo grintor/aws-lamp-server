@@ -218,11 +218,13 @@ don't let apache guess it's name:
 administrator@localhost:~$ sudo nano /etc/apache2/apache2.conf
 ```
 
+append to the bottom:
+
 ```
 ServerName 127.0.0.1
 ```
 
-and the restarting apache
+and then restart apache
 
 ```console
 administrator@localhost:~$ sudo service apache2 restart
