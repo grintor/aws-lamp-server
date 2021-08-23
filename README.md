@@ -120,6 +120,8 @@ You can now test the automatic upgrades by running:
 ```console
 administrator@localhost:~$ administrator@localhost:~$ sudo unattended-upgrades --dry-run
 ```
+There should be no errors
+
 
 You can see the next time the system will DOWNLOAD updates with:
 
@@ -148,9 +150,6 @@ administrator@localhost:~$ sudo systemctl --full edit apt-daily-upgrade.timer
 administrator@localhost:~$ sudo systemctl restart apt-daily-upgrade.timer
 administrator@localhost:~$ sudo systemctl status apt-daily-upgrade.timer
 ```
-
-
-There should be no errors
 
 The next thing I do to squeeze out all the performance I can from an aws instance is to compress the memory. This is only a good idea if your application is memory-contrained and not something that you would want to do if you were running a cpu-constrained app. But my workloads are always memory-constrained
 ```console
