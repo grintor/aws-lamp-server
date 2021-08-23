@@ -112,14 +112,43 @@ Dpkg::Options {
 
 You can confirm that the `/etc/apt/apt.conf.d/local` conf is taking effect with:
 ```console
-administrator@localhost:~$ apt-config dump | grep "DPkg::Options"
+administrator@localhost:~$ administrator@localhost:~$ apt-config dump | grep "DPkg::Options"
 ```
 
 You can now test the automatic upgrades by running:
 
 ```console
-administrator@localhost:~$ sudo unattended-upgrades --dry-run
+administrator@localhost:~$ administrator@localhost:~$ sudo unattended-upgrades --dry-run
 ```
+
+You can see the next time the system will DOWNLOAD updates with:
+
+```console
+administrator@localhost:~$ systemctl list-timers apt-daily --all
+```
+
+You can edit the DOWNLOAD schedule with:
+
+```console
+administrator@localhost:~$ sudo systemctl --full edit apt-daily.timer
+administrator@localhost:~$ sudo systemctl restart apt-daily.timer
+administrator@localhost:~$ sudo systemctl status apt-daily.timer
+```
+
+You can see the next time the system will INSTALL updates with:
+
+```console
+administrator@localhost:~$ systemctl list-timers apt-daily-upgrade --all
+```
+
+You can edit the INSTALL schedule with:
+
+```console
+administrator@localhost:~$ sudo systemctl --full edit apt-daily-upgrade.timer
+administrator@localhost:~$ sudo systemctl restart apt-daily-upgrade.timer
+administrator@localhost:~$ sudo systemctl status apt-daily-upgrade.timer
+```
+
 
 There should be no errors
 
