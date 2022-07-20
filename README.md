@@ -2,15 +2,13 @@
 My typical setup for a ubuntu lamp server on aws
 
 
-After logging in as the default "ubuntu" user, we can create a new admin user and delete that one
+After logging in as the default "ubuntu" user, we should set a password so that we can use the aws serial console if we ever need to
 
 ```console
-ubuntu@localhost:~$ sudo useradd -s /bin/bash -m -d /home/administrator -g sudo administrator
-ubuntu@localhost:~$ sudo usermod -a -G sudo administrator
-ubuntu@localhost:~$ sudo passwd administrator
+ubuntu@localhost:~$ sudo passwd ubuntu
 ```
 
-I am not a big fan of the default cert-based auth, I think you can have just as much security with very strong passwords and a good lockout policy. For lockout, all we need to do is install the fail2ban package
+For lockout, all we need to do is install the fail2ban package
 
 ```console
 ubuntu@localhost:~$ sudo apt-get update
@@ -20,26 +18,6 @@ ubuntu@localhost:~$ sudo apt-get install fail2ban
 If an IP ever gets banned by mistake, the command to unban it is:
 ```console
 ubuntu@localhost:~$ sudo fail2ban-client unban m.y.i.p
-```
-
-Now to disable cert-based auth, we need to do
-```console
-ubuntu@localhost:~$ sudo nano /etc/ssh/sshd_config
-```
-and change these settings:
-```
-PubkeyAuthentication no
-PasswordAuthentication yes
-```
-and then restart ssh (can be done remotely, will not disconnect session)
-```console
-ubuntu@localhost:~$ sudo service ssh restart
-```
-
-now we can connect to ssh as the administrator user created easlier with only a password and remove the ubuntu user
-```console
-administrator@localhost:~$ sudo userdel ubuntu
-administrator@localhost:~$ sudo rm /home/ubuntu/ -R
 ```
 
 for security sake, security patches should be installed automatically. To do that, we need to install the unattended-upgrades package
@@ -112,13 +90,13 @@ Dpkg::Options {
 
 You can confirm that the `/etc/apt/apt.conf.d/local` conf is taking effect with:
 ```console
-administrator@localhost:~$ administrator@localhost:~$ apt-config dump | grep "DPkg::Options"
+administrator@localhost:~$ apt-config dump | grep "DPkg::Options"
 ```
 
 You can now test the automatic upgrades by running:
 
 ```console
-administrator@localhost:~$ administrator@localhost:~$ sudo unattended-upgrades --dry-run
+administrator@localhost:~$ sudo unattended-upgrades --dry-run
 ```
 There should be no errors
 
@@ -153,11 +131,8 @@ administrator@localhost:~$ sudo systemctl status apt-daily-upgrade.timer
 
 The next thing I do to squeeze out all the performance I can from an aws instance is to compress the memory. This is only a good idea if your application is memory-contrained and not something that you would want to do if you were running a cpu-constrained app. But my workloads are always memory-constrained
 ```console
-administrator@localhost:~$ sudo apt-get install zram-config linux-image-extra-virtual
-administrator@localhost:~$ sudo apt-get install linux-virtual
-administrator@localhost:~$ sudo apt-get purge linux-*aws 
+administrator@localhost:~$ sudo apt-get install zram-config linux-modules-extra-aws
 ```
-Running that last command will throw a warning that you are uninstalling the kernel that you are using and ask to abort. Do not abort, the default kernel on aws cannot support memory compression, and we just installed a kernel that can.
 
 now we need to reboot so the new kernel will be used
 ```console
@@ -315,15 +290,38 @@ adminter can be downloaded to manage mysql via gui:
 administrator@localhost:~$ wget https://github.com/vrana/adminer/releases/download/v4.7.7/adminer-4.7.7.php
 ```
 
-for security sake, you should never use PHP 5.6. That said, sometimes you need to use php 5.6, so here it is
+### In the future, if we run out of disk space, the following can be used to expand the filesystem (after expanding the disk in the aws console)
 
-the only php version avalible with the latest ubuntu as of the time of writing is 7.4. to install and switch to 5.6:
+
+First, find the disk and partition of / using lsblk
 ```console
-administrator@localhost:~$ sudo add-apt-repository ppa:ondrej/php
-administrator@localhost:~$ sudo apt install php5.6 php5.6-gd php5.6-imap php5.6-xml php5.6-mbstring php5.6-intl php5.6-curl php5.6-memcached php5.6-apcu php5.6-mysqli
-administrator@localhost:~$ sudo a2dismod php7.4
-administrator@localhost:~$ sudo a2enmod php5.6
-administrator@localhost:~$ sudo service apache2 restart
-administrator@localhost:~$ sudo update-alternatives --set php /usr/bin/php5.6
+administrator@localhost:~$ sudo lsblk
 ```
 
+Assuming the disk is /dev/nvme0n1, we first need to expand the GPT disk:
+```console
+administrator@localhost:~$ sudo sgdisk -e /dev/nvme0n1
+```
+
+partprobe allows the system to learn of the changes
+```console
+administrator@localhost:~$ sudo partprobe
+```
+
+We will use growpart to expand the partition, but if the partition is full, then growpart can't work because it won't be able to write to /tmp.
+To work around that, we can make /tmp a ramdrive for a moment. Here we assume the partition we want to grow is partition 1 (/dev/nvme0n1p1) adjust accordingly 
+```console
+administrator@localhost:~$ sudo mount -o size=10M,rw,nodev,nosuid -t tmpfs tmpfs /tmp
+administrator@localhost:~$ sudo growpart /dev/nvme0n1 1
+administrator@localhost:~$ sudo umount /tmp
+```
+
+The last step is to expand the filesystem:
+```console
+administrator@localhost:~$ sudo resize2fs /dev/nvme0n1p1
+```
+
+Now you should see that you have plenty of free space
+```console
+administrator@localhost:~$ df -h
+```
