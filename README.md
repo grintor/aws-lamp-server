@@ -134,7 +134,32 @@ The next thing I do to squeeze out all the performance I can from an aws instanc
 administrator@localhost:~$ sudo apt-get install zram-config linux-modules-extra-aws
 ```
 
-now we need to reboot so the new kernel will be used
+Ubuntu 22.04 comes with zswap installed but not enabled. To enable it, we can create a startup script for it
+```console
+administrator@localhost:~$ sudo nano /etc/rc.local
+```
+
+```
+#!/bin/bash
+echo lz4 > /sys/module/zswap/parameters/compressor
+echo z3fold > /sys/module/zswap/parameters/zpool
+echo 1 > /sys/module/zswap/parameters/enabled
+echo 40 > /sys/module/zswap/parameters/max_pool_percent
+```
+
+```console
+administrator@localhost:~$ sudo chmod a+x /etc/rc.local
+```
+
+At any time, you can check the status of zswap like this
+```console
+administrator@localhost:~$ sudo dmesg | grep zswap
+administrator@localhost:~$ grep -R . /sys/module/zswap/parameters
+administrator@localhost:~$ sudo grep -R . /sys/kernel/debug/zswap
+```
+
+
+now we need to reboot so the new compression will be used
 ```console
 administrator@localhost:~$ sudo reboot
 ```
@@ -168,6 +193,7 @@ Since this is a VM, there is a risk of the enprophy pool drying up, which can ca
 ```console
 administrator@localhost:~$ sudo apt-get install haveged
 ```
+
 
 Now we can install/configure the lamp stack
 
