@@ -129,12 +129,18 @@ administrator@localhost:~$ sudo systemctl restart apt-daily-upgrade.timer
 administrator@localhost:~$ sudo systemctl status apt-daily-upgrade.timer
 ```
 
+amazon-ssm-agent is a tool that comes preinstalled that may be using resources for no good reason. If not using it, then uninstall it with:
+```console
+administrator@localhost:~$ sudo snap remove amazon-ssm-agent
+```
+
 The next thing I do to squeeze out all the performance I can from an aws instance is to compress the memory. This is only a good idea if your application is memory-contrained and not something that you would want to do if you were running a cpu-constrained app. But my workloads are always memory-constrained
 ```console
 administrator@localhost:~$ sudo apt-get install zram-config linux-modules-extra-aws
 ```
 
-Ubuntu 22.04 comes with zswap installed but not enabled. To enable it, we can create a startup script for it
+Ubuntu 22.04 comes with zswap installed but not enabled. To enable it, we can create a startup script for it.
+NOTE: do not enable both zswap and zram, pick one
 ```console
 administrator@localhost:~$ sudo nano /etc/rc.local
 ```
